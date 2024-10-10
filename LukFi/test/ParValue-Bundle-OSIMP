@@ -1,0 +1,91 @@
+############################### File ParValue ###############################
+#                                                                           #
+# Antonio Frangioni, 27/01/2019                                             #
+#                                                                           #
+# NDOSolver = Bundle, MPSolver = OsiMPSolver                                #
+#                                                                           #
+#############################################################################
+
+# parameters of test- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# NDOSolver-independent parameters- - - - - - - - - - - - - - - - - - - - - -
+
+1	which NDOSolver: 0 = CutPlane, 1 = Bundle, 2 = SubGrad
+
+2	verbosity of the NDOSolver log
+
+# parameters of LukFiOrcl - - - - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+1	which function (1, ..., 29)
+
+2	n. of variables for functions 26, 27 and 28
+
+2	n. of components for function 28 (MaxQR)
+
+1	seed for function 28 (MaxQR)
+
+# NDOSolver-specific parameters - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+1	which MPSolver:
+#       0 = QPPenaltyMP, 1 = OsiMPSolver(box), 2 = OsiMPSolver(penalty)
+
+0	which OsiXXXSolverInterface (for OsiMPSolver): 0 = Clp, 1 = Cplex
+
+# parameters of Bundle- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# parameters of NDOSolver - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+30	max number of iterations for each call to Solve()
+500	max time limit (in seconds) for each call to Solve()
+
+1e1	tStar: stopping parameter
+1e-6	EpsLin: stopping parameter
+
+1e-8	initial (minimal) precision required to the FiOracle
+1e-8	final (maximal) precision required to the FiOracle
+.95	the precision is multiplied by <this> ...
+0	... every <this> steps (0 = fixed precision)
+
+# parameters of Bundle- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+20	discard items when they have been useless for <this> iterations
+400	max bundle size
+1	max n. of items to fetch from Fi() at each iteration
+1	min n. of items to fetch from Fi() at each iteration
+4	first ...
+0	... and second parameter for dynamic max n. of items per iteration
+
+-0.1	m1 parameter: SS if improvement >= | m1 | * ( predicted improvement )
+.9	m3 parameter: if Alfa1 >= m3 * Sigma, decrease t
+
+10	max increase of t
+1.5	min increase of t (each time it is increased)
+0	min number of consecutive SS with the same t for a t increase
+
+.1	max decrease of t
+.66	min decrease of t (each time it is decreased)
+3	min number of consecutive NS with the same t for a t decrease
+
+1e+6	maximum value for t
+1e-4	minimum value for t
+100	initial value for t
+
+0	long-term t-strategy (0 = none, 4 = soft, 8 = hard, 12 = balancing)
+.001	parameter for the long-term t-strategy
+
+10	pricing parameter: do pricing for the first <this> iterations ...
+0	... and afterwards every <this> iterations (0 ==> no pricing)
+5	remove variables if inactive for <this> consecutive pricings
+
+1e-12	relative "feasibility" precision required to the MPSolver
+1e-12	relative "optimality" precision required to the MPSolver
+
+# parameters of OsiMPSolver - - - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# (it has none)
+
+############################# End File ParValue #############################

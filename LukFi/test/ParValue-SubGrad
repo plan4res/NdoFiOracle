@@ -1,0 +1,74 @@
+############################### File ParValue ###############################
+#                                                                           #
+# Antonio Frangioni, 27/01/2019                                             #
+#                                                                           #
+# NDOSolver = SubGrad, Deflection = none , Stepsize = ColorTV               #
+#                                                                           #
+#############################################################################
+
+# parameters of test- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# NDOSolver-independent parameters- - - - - - - - - - - - - - - - - - - - - -
+
+2	which NDOSolver: 0 = CutPlane, 1 = Bundle, 2 = SubGrad
+
+2	verbosity of the NDOSolver log
+
+# parameters of LukFiOrcl - - - - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+3	which function (1, ..., 29)
+
+2	n. of variables for functions 26, 27 and 28
+
+2	n. of components for function 28 (MaxQR)
+
+1	seed for function 28 (MaxQR)
+
+# NDOSolver-specific parameters - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+0	which Deflection: 0 = none, 1 = Volume, 2 = PrimalDual
+
+2	which Stepsize: 0 = ColorTV, 1 = FumeroTV, 2 = Polyak, 3 = PrimalDual
+
+# parameters of SubGrad - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# parameters of NDOSolver - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+1000	max number of iterations for each call to Solve()
+500	max time limit (in seconds) for each call to Solve()
+
+1e2	tStar: stopping parameter
+1e-8	EpsLin: stopping parameter
+
+1e-8	initial (minimal) precision required to the FiOracle
+1e-8	final (maximal) precision required to the FiOracle
+.95	the precision is multiplied by <this> ...
+0	... every <this> steps (0 = fixed precision)
+
+# parameters of SubGrad - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+0	what to project (first three bits = sungrad, previous dir, dir)
+
+0	how many incremental iterations for each full one
+
+0	bit 0:  1 if the safe rule
+#       bit 1:  1 for the stepsize-restricted, 0 for the deflection-restricted
+
+0	bool: use the \hat{\lambda} point in the stopping test
+
+0	seed of the random generato (for Incremental only)
+
+# parameters of Deflection- - - - - - - - - - - - - - - - - - - - - - - - - -
+# (none, for there is no Deflection)
+
+# parameters of Stepsize- - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+1	general scaling factor of the base Stepsize class
+
+1	fixed value of beta
+
+############################# End File ParValue #############################

@@ -1,0 +1,67 @@
+##############################################################################
+############################## makefile-libOSI ###############################
+##############################################################################
+#                                                                            #
+#   makefile of libOSI                                                       #
+#                                                                            #
+#   Input:  $(Osi_ROOT), the directory where OSI is installed                #
+#                                                                            #
+#   Output: accordingly, there is no *H and *OBJ in output, since there is   #
+#           no need to check for changes in the .h and rebuild the .o / .a   #
+#           $(libOSILIB) = external libraries + -L< libdirs > for libOSI     #
+#           $(libOSIINC) = the -I$(include directories) for libOSI           #
+#                                                                            #
+#                              Antonio Frangioni                             #
+#                         Dipartimento di Informatica                        #
+#                             Universita' di Pisa                            #
+#                                                                            #
+##############################################################################
+
+# internal macros - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# basic COIN directory without quotes, if any
+libOSIBSCDIR = $(subst $\",,$(Osi_ROOT))
+libCLPBSCDIR = $(subst $\",,$(Clp_ROOT))
+libUTILSBSCDIR = $(subst $\",,$(CoinUtils_ROOT))
+
+# external libraries that OSI needs: uncomment your version
+# note: the code may compile without these libraries, but it may be a lot slower
+ifeq ($(UNAME_S),Darwin)
+    libOSIEXTLIB = -framework Accelerate
+else
+    libOSIEXTLIB = -llapack
+endif
+
+# specific OSIXXXOpenInterface: uncomment your version to add to libOSILIB
+# the appropriate ones among -lOsiCpx, -lOsiGrb, ... to match the
+# OsiXXXSolverInterface that you want to use; however, note that the
+# libraries and -L< libdirs > corresponding to the actual solvers that need
+# to be linked (Cplex, Gurobi, ...) have to be separately defined, e.g., by
+# including a corresponding makefile-libXXX as well in whatever "main"
+# makefile is including this one
+#
+# neither Cplex nor Gurobi
+#libOSIXXXOSI =
+# only Cplex
+#libOSIXXXOSI = -lOsiCpx
+# only Gurobi
+#libOSIXXXOSI = -lOsiGrb
+# both Cplex and Gurobi
+libOSIXXXOSI = -lOsiCpx -lOsiGrb
+
+# macros to be exported - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+libOSILIB = -L"$(libOSIBSCDIR)/lib" -lOsi -lOsiClp $(libOSIXXXOSI) \
+        -L"$(libCLPBSCDIR)/lib" -lClp \
+        -L"$(libUTILSBSCDIR)/lib" -lCoinUtils
+ifeq ($(UNAME_S),Windows)
+    libOSIINC = -I"$(libOSIBSCDIR)/include/coin-or" \
+        -I"$(libCLPBSCDIR)/include/coin-or" \
+        -I"$(libUTILSBSCDIR)/include/coin-or"
+else
+    libOSIINC = -I"$(libOSIBSCDIR)/include/coin" \
+        -I"$(libCLPBSCDIR)/include/coin" \
+        -I"$(libUTILSBSCDIR)/include/coin"
+endif
+
+######################### End of makefile-libOSI #############################

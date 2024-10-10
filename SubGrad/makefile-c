@@ -1,0 +1,52 @@
+##############################################################################
+################################ makefile-c ##################################
+##############################################################################
+#                                                                            #
+#   complete makefile of SubGrad                                             #
+#                                                                            #
+#   The makefile defines internally all external libraries *excluded the     #
+#   NDOSolver / FiOracle one* required by SubGrad. This boils down to        #
+#   CQKnPClass if SubGrad_HANDLES_CONSTRAINTS != 0, and none otherwise.      #
+#                                                                            #
+#   Input:  $(CC)       = compiler command                                   #
+#           $(SW)       = compiler options                                   #
+#   	    $(NDOSFH)   = the .h files to include for NDOSolver/FiOracle     #
+#           $(NDOSFINC) = the -I$(NDOSolver/FiOracle directories)            #
+#           $(SubGrSDR) = the directory where the SubGrad source is          #
+#                                                                            #
+#   Output: $(SubGrOBJ) = the final object(s) / library	                     #
+#           $(SubGrLIB) = external libraries + -L< libdirs >                 #
+#           $(SubGrH)   = the .h files to include for SubGrad                #
+#           $(SubGrINC) = the -I(SubGrad directory)                          #
+#                                                                            #
+#                              Antonio Frangioni                             #
+#                         Dipartimento di Informatica                        #
+#                             Universita' di Pisa                            #
+#                                                                            #
+##############################################################################
+
+# define & include the necessary modules- - - - - - - - - - - - - - - - - - -
+# if a module is not used in the current configuration, just comment out the
+# corresponding include line
+# each module outputs some macros to be used here:
+# *OBJ is the final object/library
+# *H   is the list of all include files
+# *INC is the -I< include directories >
+
+# define input macros for libCQK complete makefile, then include it
+libCQKDIR = $(SubGrSDR)../CQK
+include $(libCQKDIR)/lib/makefile-c
+
+# include the makefile requiring all external modules in input
+include $(SubGrSDR)/makefile
+
+# macros to be exported - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# append external -I directives to SubGrINC as defined by the makefile, thus
+# the := assignment has to be used (use GNU make)
+SubGrINC := $(SubGrINC) $(libCQKINC)
+
+# external libraries for MCFBlock
+SubGrLIB = $(libCQKOBJ) $(libCQKLIB)
+
+############################ End of makefile #################################

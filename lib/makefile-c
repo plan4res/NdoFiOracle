@@ -1,0 +1,93 @@
+##############################################################################
+################################ makefile-c ##################################
+##############################################################################
+#                                                                            #
+#   complete makefile of libNDO                                              #
+#                                                                            #
+#   The makefile defines internally all external libraries required by       #
+#   the libNDO library. Accordingly, all necessary OBJ, H, -I directives,    #
+#   and external libraries + -L< libdirs > are added to the corresponding    #
+#   libNDO* macros.                                                          #
+#                                                                            #
+#   Input:  $(CC)        = compiler command                                  #
+#           $(SW)        = compiler options                                  #
+#           $(libNDOSDR) = the (base) directory where the libNDO source is   #
+#           NDOFi_NO_PATHS   if the macro is defined (irrespectively from    #
+#                            the value it has) then the two files            #
+#                            $(libNDOSDR)/extlib/makefile-default-paths      #
+#                            and $(libNDOSDR)/extlib/makefile-paths are      #
+#                            *not* read (the second one, optionally) to      #
+#                            define the *_ROOT macros that contain the       #
+#                            install locations of the external libraries     #
+#                            needed by MCFClass, which means that they are   #
+#                            either not needed or defined already by         #
+#                            whichever "main" makefile is including this     #
+#                                                                            #
+#   Output: $(libNDOOBJ) = the final objects                                 #
+#           $(libNDOH)   = the .h files to include for libNDO                #
+#           $(libNDOINC) = all the -I$( include dirs ) of libNDO             #
+#           $(libNDOLIB) = the external libraries + -L< libdirs >            #
+#                                                                            #
+#                              Antonio Frangioni                             #
+#                         Dipartimento di Informatica                        #
+#                             Universita' di Pisa                            #
+#                                                                            #
+##############################################################################
+
+# OS-specific settings
+include $(libNDOSDR)/lib/makefile-OS
+
+ifndef NDOFi_NO_PATHS
+	# unless the *_ROOT macros are already properly defined somehow
+
+	# include a makefile that should define all the paths needed by every
+	# other makefile (possibly after automatic OS adaptation, see above) 
+	# relatively to the places where all external libraries are to be
+	# found by default
+	include $(libNDOSDR)/extlib/makefile-default-paths
+
+	# optionally (note the "-" in front), include a makefile that should
+	# define all the paths needed by every other makefile (possibly after
+	# automatic OS adaptation, see above) to cater for external libraries
+	# being located in non-standard locations. This file is .gitignore-d,
+	# so that its values are not lost when pulling any part of the project
+	# anew or need be manually ignored when pushing changes.
+	-include $(libNDOSDR)/extlib/makefile-paths
+endif
+
+# define & include the necessary modules- - - - - - - - - - - - - - - - - - -
+# if a module is not used in the current configuration, just comment out the
+# corresponding include line
+# each module outputs some macros to be used here:
+# *INC are the -I< include directories >
+# *LIB are the external libraries + -L< libdirs >
+
+# OPT*** stuff
+OPTUxH = $(libNDOSDR)/OPTUtils/OPTUtils.h \
+	$(libNDOSDR)/OPTUtils/OPTtypes.h $(libNDOSDR)/OPTUtils/OPTvect.h
+OPTUxINC = -I$(libNDOSDR)/OPTUtils
+
+# OsiSolverInterface external libraries
+include $(libNDOSDR)/extlib/makefile-libOSI
+
+# cplex external libraries: need be included only if either
+# OsiCpxSolverInterface has been compiled in OsiSolverInterface, or libCQK
+# has been included by SubGrad and CQKnPCplex has been compiled in there
+include $(libNDOSDR)/extlib/makefile-libCPX
+
+# gurobi external libraries: need be included only if OsiGrbSolverInterface
+# has been compiled in OsiSolverInterface
+include $(libNDOSDR)/extlib/makefile-libGRB
+
+# include the libNDO makefile requiring all external modules in input
+include $(libNDOSDR)/lib/makefile
+
+# macros to be exported - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# external -I directives for the core libNDO
+libNDOINC := $(libNDOINC) $(libOSIINC) $(libCQKINC) $(libCPXINC) $(libGRBINC)
+
+# external libraries for the core libNDO
+libNDOLIB := $(libNDOLIB) $(libOSILIB) $(libCQKLIB) $(libCPXLIB) $(libGRBLIB)
+
+########################### End of makefile-c ################################

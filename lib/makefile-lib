@@ -1,0 +1,77 @@
+##############################################################################
+############################## makefile-lib ##################################
+##############################################################################
+#                                                                            #
+#   makefile of libNDO - frontend for building the library                   #
+#                                                                            #
+#   Input:  optional: $(libNDOSDR) = the (base) directory where the          #
+#                     NDOSolver/FiOracle source is. If the macro is not      #
+#                     provided ".." is used, since it is assumed that the    #
+#                     "make -f makefile-lib" command is issued in the lib    #
+#                     folder.                                                #
+#                                                                            #
+#           optional: $(CC) = the C++ compiler command. If the macro is      #
+#                     not provided, it is defined locally.                   #
+#                                                                            #
+#           optional: $(SW) = the compiler options (optimization, debug,     #
+#                     required C++ standard, ...). If the macro is not       #
+#                     provided, it is defined locally.                       #
+#                                                                            #
+#   Output: none, just the library being built                               #
+#                                                                            #
+#                              Antonio Frangioni                             #
+#                         Dipartimento di Informatica                        #
+#                             Universita' di Pisa                            #
+#                                                                            #
+##############################################################################
+
+ifndef libNDOSDR
+libNDOSDR = ..
+endif
+
+ifndef CC
+# compiler
+CC = clang++
+endif
+
+ifndef SW
+# debug compiler options
+#SW = -g3 -glldb -fno-inline -std=c++14 -ferror-limit=1
+# production compiler options
+SW = -O3 -DNDEBUG -std=c++14
+endif
+
+# module name
+NAME = $(libNDOSDR)/lib/libNDO.a
+
+# default target- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+default: $(NAME)
+
+# build = default - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+build: $(NAME)
+
+# clean - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+clean::
+	rm -f $(NAME)
+
+# define & include the necessary modules- - - - - - - - - - - - - - - - - - -
+# if a module is not used in the current configuration, just comment out the
+# corresponding include line
+# each module outputs some macros to be used here:
+# *OBJ is the final object(s) / library
+# *LIB is the external libraries + -L< libdirs >
+# *H   is the list of all include files
+# *INC is the -I< include directories >
+
+# libNDO (complete with external libraries)
+include $(libNDOSDR)/lib/makefile-c
+
+# archive the library - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+$(NAME): $(libNDOOBJ) $(libNDOH)
+	ar -ruv $(NAME) $(libNDOOBJ)
+
+########################## End of makefile-lib ###############################

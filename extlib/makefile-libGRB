@@ -1,0 +1,60 @@
+##############################################################################
+############################## makefile-libGRB ###############################
+##############################################################################
+#                                                                            #
+#   makefile of libGRB                                                       #
+#                                                                            #
+#   Input:  $(GUROBI_ROOT), the directory where Gurobi is installed          #
+#                                                                            #
+#   Output: accordingly, there is no *H and *OBJ in output, since there is   #
+#           no need to check for changes in the .h and rebuild the .o / .a   #
+#           $(libGRBLIB) = external libraries + -L< libdirs > for libGRB     #
+#           $(libGRBINC) = the -I$(include directories) for libGRB           #
+#                                                                            #
+#                              Antonio Frangioni                             #
+#                         Dipartimento di Informatica                        #
+#                             Universita' di Pisa                            #
+#                                                                            #
+##############################################################################
+
+# internal macros - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# external libraries that Gurobi needs
+ifeq ($(UNAME_S),Linux)
+    libGRBEXTLIB = -lpthread
+endif
+ifeq ($(UNAME_S),Darwin)
+    libGRBEXTLIB =
+endif
+ifeq ($(UNAME_S),Windows)
+    libGRBEXTLIB = -lpthreadVC3
+endif
+
+# basic Gurobi directory
+ifeq ($(UNAME_S),Linux)
+    libGRBBSCDIR = $(GUROBI_ROOT)/linux64
+endif
+ifeq ($(UNAME_S),Darwin)
+    libGRBBSCDIR = $(GUROBI_ROOT)
+endif
+ifeq ($(UNAME_S),Windows)
+    ifeq ($(UNAME_P),x86_64)
+        libGRBBSCDIR = $(GUROBI_ROOT)/win32
+    else
+         libGRBBSCDIR = $(GUROBI_ROOT)/win64
+    endif
+endif
+
+# macros to be exported - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ifeq ($(UNAME_S),Windows)
+    libGUROBILIB = -L"$(libGRBBSCDIR)/lib" -lgurobi100 \
+               -L"$(vcpkg_ROOT)/lib" $(libGUROBIEXTLIB)
+else
+    libGUROBILIB = -L"$(libGRBBSCDIR)/lib" -lgurobi100 $(libGRBEXTLIB)
+endif
+
+libGRBLIB = -L"$(libGRBBSCDIR)/lib" -lgurobi100 $(libGRBEXTLIB)
+libGRBINC = -I"$(libGRBBSCDIR)/include"
+
+######################### End of makefile-libGRB #############################

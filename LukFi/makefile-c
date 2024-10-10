@@ -1,0 +1,50 @@
+##############################################################################
+################################# makefile ###################################
+##############################################################################
+#                                                                            #
+#   makefile of LukFiOrcl                                                    #
+#   all modules are defined here                                             #
+#                                                                            #
+#   Input:  $(CC)     = compiler command                                     #
+#           $(SW)     = compiler options                                     #
+#           $(OPTH)   = the OPT****.h files to include                       #
+#           $(OPTINC) = the -I$( OPT****.h directory )                       #
+#           $(LUKDIR) = the directory where the source is                    #
+#                                                                            #
+#   Output: $(LUKOBJ) = the final object file(s)                             #
+#           $(LUKLIB) = external libraries + -L< libdirs >                   #
+#           $(LUKH)   = the .h files to include                              #
+#           $(LUKINC) = the -I$( include directories )                       #
+#                                                                            #
+#                              Antonio Frangioni                             #
+#                         Dipartimento di Informatica                        #
+#                             Universita' di Pisa                            #
+#                                                                            #
+##############################################################################
+
+# define & include the necessary modules- - - - - - - - - - - - - - - - - - -
+# if a module is not used in the current configuration, just comment out the
+# corresponding include line
+# each module outputs some macros to be used here:
+# *LIB external libraries + -L< libdirs >
+# *OBJ the final object(s) / library
+# *H   is the list of all include files
+# *INC is the -I< include directories >
+
+# the whole libNDO, with all required external libraries
+libNDODIR = $(LUKDIR)/..
+include $(libNDODIR)/lib/makefile-c
+
+# LukFiOrcl (the makefile requiring all external modules in input)
+include $(LUKDIR)/makefile
+
+# macros to be exported - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# append external libraries to LukFiOrcl as defined in the makefile, thus
+# the := assignment has to be used (hope you have GNU make)
+
+LUKOBJ := $(LUKOBJ) $(libNDOOBJ)
+LUKLIB := $(LUKLIB) $(libNDOLIB)
+LUKH   := $(LUKH) $(libNDOH)
+LUKINC := $(LUKINC) $(libNDOINC)
+
+############################ End of makefile #################################

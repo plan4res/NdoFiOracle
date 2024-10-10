@@ -1,0 +1,57 @@
+##############################################################################
+############################# makefile-libCPX ################################
+##############################################################################
+#                                                                            #
+#   makefile of libCPX                                                       #
+#                                                                            #
+#   Input:  $(CPLEX_ROOT), the directory where Cplex Studio is installed     #
+#   Output: accordingly, there is no *H and *OBJ in output, since there is   #
+#           no need to check for changes in the .h and rebuild the .o / .a   #
+#                                                                            #
+#           $(libCPXLIB) = external libraries + -L< libdirs > for libCP      #
+#           $(libCPXINC) = the -I$(include directories) for libCPX           #
+#                                                                            #
+#                              Antonio Frangioni                             #
+#                         Dipartimento di Informatica                        #
+#                             Universita' di Pisa                            #
+#                                                                            #
+##############################################################################
+
+# internal macros - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# external libraries that Cplex needs
+ifeq ($(UNAME_S),Linux)
+    libCPXEXTLIB = -lpthread
+endif
+ifeq ($(UNAME_S),Darwin)
+    libCPXEXTLIB =
+endif
+ifeq ($(UNAME_S),Windows)
+    libCPXEXTLIB = -lpthreadVC3
+endif
+
+# basic CPLEX directory without quotes, if any
+libCPXBSCDIR = $(subst $\",,$(CPLEX_ROOT))/cplex
+
+# lib Cplex directory
+ifeq ($(UNAME_S),Linux)
+    libCPXINCDIR = $(libCPXBSCDIR)/lib/x86-64_linux/static_pic
+endif
+ifeq ($(UNAME_S),Darwin)
+    libCPXINCDIR = $(libCPXBSCDIR)/lib/x86-64_osx/static_pic
+endif
+ifeq ($(UNAME_S),Windows)
+    libCPXINCDIR = $(libCPXBSCDIR)/lib/x64_windows_msvc14/stat_mda
+endif
+
+# macros to be exported - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ifeq ($(UNAME_S),Windows)
+    libCPXLIB = -L"$(libCPXINCDIR)" -lilocplex -lcplex \
+            -L"$(vcpkg_ROOT)/lib" $(libCPXEXTLIB)
+else
+    libCPXLIB = -L"$(libCPXINCDIR)" -lilocplex -lcplex $(libCPXEXTLIB)
+endif
+libCPXINC = -I"$(libCPXBSCDIR)/include" -DBUILD_CPXSTATIC -DCPXSIZE_BITS_TEST_DISABLE
+
+######################### End of makefile-libCPX #############################

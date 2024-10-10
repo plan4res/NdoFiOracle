@@ -1,0 +1,81 @@
+##############################################################################
+############################### makefile-inc #################################
+##############################################################################
+#                                                                            #
+#   makefile of libNDO as a pre-built library                                #
+#                                                                            #
+#   This makefile is thought to be included by the makefile of some code     #
+#   using the libNDO library. However, this makefile treats libNDO as a      #
+#   pre-built library, in the sense that it ensures that it is built and     #
+#   then returns as $(libNDOOBJ) the complete libNDO library together with   #
+#   macros $(libNDOINC) and $(libNDOLIB) for includes and external           #
+#   libraries, but not $(libNDOH).                                           #
+#                                                                            #
+#   Input:  $(libNDOSDR) = the directory where the libNDO source is          #
+#                                                                            #
+#           NDOFi_NO_PATHS   if the macro is defined (irrespectively from    #
+#                            the value it has) then the two files            #
+#                            $(libNDOSDR)/extlib/makefile-default-paths      #
+#                            and $(libNDOSDR)/extlib/makefile-paths are      #
+#                            *not* read (the second one, optionally) to      #
+#                            define the *_ROOT macros that contain the       #
+#                            install locations of the external libraries     #
+#                            needed by NDOass, which means that they are   #
+#                            either not needed or defined already by         #
+#                            whichever "main" makefile is including this     #
+#                                                                            #
+#   Output: there is no $(libNDOH) output, since the calling makefile has    #
+#           no need to check for changes in the .h and rebuild the .a: this  #
+#           is all done here inside. However, the following macros are       #
+#           provided because the code using libNDO need to know where to     #
+#           find the .h files to include, which external libraries and       #
+#            -L< libdirs > need be used in the linking phase, and of course  #
+#           libNDO.a need be linked against.                                 #
+#           $(libNDOINC) = the -I$( include directories ) for libNDO         #
+#           $(libNDOLIB) = external libraries + -L< libdirs > for libNDO     #
+#           $(libNDOOBJ) = the libNDO.a library itself                       #
+#                                                                            #
+#   Internally, the makefile calls makefile-c, strips away the *H macro and  #
+#   redefines the *OBJ one.                                                  #
+#                                                                            #
+#                              Antonio Frangioni                             #
+#                         Dipartimento di Informatica                        #
+#                             Universita' di Pisa                            #
+#                                                                            #
+##############################################################################
+
+# include the libNDO makefile internally defining all external modules - - - -
+
+include $(libNDOSDR)/lib/makefile-c
+
+# copy the list of object files, using ":=" to ensure it remains the same
+# even after that libNDOOBJ is redefined later on
+libNDO_LOCAL_OBJ := $(libNDOOBJ)
+
+# define the local name for the library - - - - - - - - - - - - - - - - - - -
+
+libNDO_LOCAL_LIB = $(libNDOSDR)/lib/libNDO.a
+
+# default target- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+default: $(libNDO_LOCAL_LIB)
+
+# clean - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+clean::
+	rm -f $(libNDO_LOCAL_LIB)
+
+# archive the library - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+$(libNDO_LOCAL_LIB): $(libNDO_LOCAL_OBJ)
+	ar -ruv $(libNDO_LOCAL_LIB) $(libNDO_LOCAL_OBJ)
+
+# re-define the OBJ as the library- - - - - - - - - - - - - - - - - - - - - -
+
+libNDOOBJ = $(libNDO_LOCAL_LIB)
+
+# clean-up unrequired things- - - - - - - - - - - - - - - - - - - - - - - - -
+
+libNDOH =
+
+########################## End of makefile-inc ###############################

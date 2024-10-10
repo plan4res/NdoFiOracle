@@ -1,0 +1,71 @@
+############################### File ParValue ###############################
+#                                                                           #
+# Antonio Frangioni, 27/01/2019                                             #
+#                                                                           #
+# NDOSolver = Bundle, MPSolver = OsiMPSolver                                #
+#                                                                           #
+#############################################################################
+
+# parameters of test- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# NDOSolver-independent parameters- - - - - - - - - - - - - - - - - - - - - -
+
+0	which NDOSolver: 0 = CutPlane, 1 = Bundle, 2 = SubGrad
+
+2	verbosity of the NDOSolver log
+
+# parameters of LukFiOrcl - - - - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+1	which function (1, ..., 29)
+
+2	n. of variables for functions 26, 27 and 28
+
+2	n. of components for function 28 (MaxQR)
+
+1	seed for function 28 (MaxQR)
+
+# NDOSolver-specific parameters - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+0	which OsiXXXSolverInterface: 0 = Clp, 1 = Cplex
+
+# parameters of CutPlane- - - - - - - - - - - - - - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# parameters of NDOSolver - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+30	max number of iterations for each call to Solve()
+500	max time limit (in seconds) for each call to Solve()
+
+1e1	tStar: stopping parameter
+1e-6	EpsLin: stopping parameter
+
+1e-8	initial (minimal) precision required to the FiOracle
+1e-8	final (maximal) precision required to the FiOracle
+.95	the precision is multiplied by <this> ...
+0	... every <this> steps (0 = fixed precision)
+
+# parameters of CutPlane- - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+100	number of items (re)allocated each time it is needed
+
+-1	< 0  never purge rows
+#       = 0  purge rows with slack greater than gap
+#       > 0  purge rows with slack greater than gap * <this>
+
+5	how often rows are purged
+
+1	n. of items asked to the FiOracle for every component in Phase 0
+
+1	n. of items asked to the FiOracle for every component in Phase 1
+
+30	how often extra items are asked for every Fi-component in Phase 1
+		      is "naturally" bounded.
+
+0	if == 0, do not care for subgradient "names"
+
+1	how often log information is printed
+
+############################# End File ParValue #############################
